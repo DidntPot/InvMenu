@@ -54,7 +54,8 @@ class SingleBlockMenuMetadata extends MenuMetadata{
 		$packet->x = $pos->x;
 		$packet->y = $pos->y;
 		$packet->z = $pos->z;
-		$packet->blockRuntimeId = $this->block->getRuntimeId();
+		$packet->blockId = $this->block->getId();
+		$packet->blockMeta = $this->block->getDamage();
 		$packet->flags = UpdateBlockPacket::FLAG_NETWORK;
 		$player->sendDataPacket($packet);
 	}
@@ -62,11 +63,13 @@ class SingleBlockMenuMetadata extends MenuMetadata{
 	public function removeGraphic(Player $player, MenuExtradata $extradata) : void{
 		$level = $player->getLevel();
 		foreach($this->getBlockPositions($extradata) as $pos){
+			$block = $level->getBlockAt($pos->x, $pos->y, $pos->z);
 			$packet = new UpdateBlockPacket();
 			$packet->x = $pos->x;
 			$packet->y = $pos->y;
 			$packet->z = $pos->z;
-			$packet->blockRuntimeId = $level->getBlockAt($pos->x, $pos->y, $pos->z)->getRuntimeId();
+			$packet->blockId = $block->getId();
+			$packet->blockMeta = $block->getDamage();
 			$packet->flags = UpdateBlockPacket::FLAG_NETWORK;
 			$player->sendDataPacket($packet, false, true);
 		}
